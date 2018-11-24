@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">SuperBleDemo</string>
+    <string name="openBle">打开蓝牙</string>
+    <string name="mScan">扫描</string>
+
+    <string name="connectStatus">连接状态</string>
+    <string name="disconnected">未连接</string>
+    <string name="connected">已连接</string>
+    <string name="connecting">连接中</string>
+
+
+    <string name="receiveData">接收数据</string>
+    <string name="send">发送</string>
+</resources>
