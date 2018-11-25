@@ -1,5 +1,6 @@
 # SuperBleDemo
 
+[ ![Download](https://api.bintray.com/packages/shiqizhenyes/androidOpenSourceLibrary/SuperBleLib/images/download.svg) ](https://bintray.com/shiqizhenyes/androidOpenSourceLibrary/SuperBleLib/_latestVersion)
 ![avatar](/image/logo.png)
 
 ### 一个很容易的使用的低功耗的蓝牙库
