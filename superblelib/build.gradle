@@ -1,0 +1,145 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+//apply plugin: 'com.github.dcendents.android-maven'
+//apply plugin: 'com.jfrog.bintray'
+
+def siteUrl = 'https://github.com/shiqizhenyes/SuperBleLib' // 项目主页。
+def gitUrl = 'https://github.com/shiqizhenyes/SuperBleLib.git' // Git仓库的url。
+
+//group = "mobi.zack.superblelib"// 唯一包名,比如compile 'com.ansen.http:okhttpencapsulation:1.0.1'中的com.ansen.http就是这里配置的。
+//version = "1.0.0"//项目引用的版本号，比如compile 'com.ansen.http:okhttpencapsulation:1.0.1'中的1.0.1就是这里配置的。
+
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        minSdkVersion 18
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}
+
+
+
+//publish {
+//    userOrg = 'shiqizhenyes'                 //bintray注册的用户名
+//    groupId = 'mobi.zack.superblelib'   //compile引用时的第1部分groupId
+//    artifactId = 'superblelib'               //compile引用时的第2部分项目名
+//    publishVersion = '0.0.1'            //compile引用时的第3部分版本号
+//    desc = 'bluetooth open source library'
+//    website = siteUrl
+//}
+
+
+// 生成jar包的task，不需要修改。
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+// 生成jarDoc的task，不需要修改。
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    failOnError false // 忽略注释语法错误，如果用jdk1.8你的注释写的不规范就编译不过。
+}
+
+// 生成javaDoc的jar，不需要修改。
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+group = "mobi.zack.superblelib"
+version = "1.0.0"
+
+install {
+    repositories.mavenInstaller {
+        // 生成pom.xml和参数
+        pom {
+            project {
+                packaging 'aar'
+                // 项目描述，复制我的话，这里需要修改。
+                name 'SuperBleLib'// 可选，项目名称。
+                description 'bluetooth open source library'// 可选，项目描述。
+                url siteUrl // 项目主页，这里是引用上面定义好。
+
+                // 软件开源协议，现在一般都是Apache License2.0吧，复制我的，这里不需要修改。
+                licenses {
+                    license {
+                        name 'MIT'
+                        url 'https://mit-license.org/'
+                    }
+                }
+
+                //填写开发者基本信息，复制我的，这里需要修改。
+                developers {
+                    developer {
+                        id 'shiqizhenyes' // 开发者的id。
+                        name 'shiqizhenyes' // 开发者名字。
+                        email 'shiqizhenyes@gmail.com' // 开发者邮箱。
+                    }
+                }
+
+                // SCM，复制我的，这里不需要修改。
+                scm {
+                    connection gitUrl // Git仓库地址。
+                    developerConnection gitUrl // Git仓库地址。
+                    url siteUrl // 项目主页。
+                }
+            }
+        }
+    }
+}
+
+
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    publish = true
+    configurations = ['archives']
+    pkg {
+        //填入 bintray 上对应的 package 信息
+        repo = 'androidOpenSourceLibrary'
+        name = 'SuperBleLib'
+        vcsUrl = 'https://github.com/shiqizhenyes/SuperBleLib.git'
+        websiteUrl = 'https://github.com/shiqizhenyes/SuperBleLib'
+        licenses = ['MIT']
+        issueTrackerUrl = 'https://github.com/shiqizhenyes/SuperBleLib/issues'
+        publicDownloadNumbers = true
+        version {
+            name = '1.0.0'
+            desc = 'bluetooth open source library'
+            vcsTag = '1.0.0'
+            attributes = ['gradle-plugin': 'com.use.less:com.use.less.gradle:gradle-useless-plugin']
+        }
+    }
+}
+
