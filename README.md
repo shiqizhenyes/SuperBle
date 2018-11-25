@@ -175,7 +175,7 @@
             });
 ```
 
-## 写入数据
+## 写入数据
 
 ```java
     superBle.write(writeUUID, data.getBytes(), superBleGatt, new SuperBleWriteCallBack() {
