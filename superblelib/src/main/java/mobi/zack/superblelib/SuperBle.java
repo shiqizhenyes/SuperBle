@@ -408,7 +408,7 @@ public class SuperBle implements BleOperation {
     }
 
     @Override
-    public void disconnectALl() {
+    public void disconnectAll() {
         if (bluetoothGatt != null) {
             bluetoothGatt.disconnect();
             bluetoothGatt = null;

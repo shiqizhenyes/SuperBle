@@ -16,6 +16,9 @@
   2. 修复断开连接的bug
   3. 新增主线程数据回调接口
 
+###### 1.0.2：
+    1.修复拼写错误
+
 ## 初始化
 
 ```java
@@ -141,7 +144,7 @@
 
       superBle.disconnect(mac);
 
-      superBle.disconnectALl();
+      superBle.disconnectAll();
 
 ```
 

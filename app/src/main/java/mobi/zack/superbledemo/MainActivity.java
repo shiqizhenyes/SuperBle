@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.mDisconnect:
 
-                superBle.disconnectALl();
+                superBle.disconnectAll();
 
                 break;
         }
