@@ -8,7 +8,7 @@
 
 ## 引入
 
-    implementation 'mobi.zack.superblelib:superblelib:1.0.1'
+    implementation 'mobi.zack.superblelib:superblelib:x.y.z'
 
 ### bug 修复
 ###### 1.0.1：
