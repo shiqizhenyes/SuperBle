@@ -5,6 +5,12 @@
 
 ### 一个很容易的使用的低功耗的蓝牙库
 
+### bug 修复
+###### 1.0.1：
+  1. 修复数据无法回调bug
+  2. 修复断开连接的bug
+  3. 新增主线程数据回调接口
+
 ## 初始化
 
 ```java
@@ -121,6 +127,19 @@
 
 ```
 
+## 断开连接
+
+```java
+
+
+      superBle.disconnect(device);
+
+      superBle.disconnect(mac);
+
+      superBle.disconnectALl();
+
+```
+
 ## 开始服务
 
 ```java
@@ -145,17 +164,39 @@
 
     superBle.initNotification(gatt, notifyUUID, superBleGatt, new SuperBleNotifyCallBack() {
 
-                @Override
-                public void onNotifySuccess(BluetoothGatt gatt, BluetoothGattCharacteristic notifyCharacteristic, SuperBleGatt superBleGatt) {
-                    Log.d(tag,"订阅成功");
-                    startDescribe(gatt, superBleGatt, notifyCharacteristic);
-                }
+      @Override
+      public void onNotifySuccess(BluetoothGatt gatt, BluetoothGattCharacteristic notifyCharacteristic, SuperBleGatt superBleGatt) {
+          Log.d(tag,"订阅成功");
+          startDescribe(gatt, superBleGatt, notifyCharacteristic);
+      }
 
-                @Override
-                public void onNotifyFail(BluetoothGatt gatt, SuperBleGatt superBleGatt) {
-                    Log.d(tag,"订阅失败");
-                }
-            });
+      @Override
+      public void onNotifyFail(BluetoothGatt gatt, SuperBleGatt superBleGatt) {
+          Log.d(tag,"订阅失败");
+      }
+
+      @Override
+      public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+          byte[] data = characteristic.getValue();
+          try {
+              String s = new String(data, "utf-8");
+              Log.d(tag, "设备返回数据："+ s);
+          } catch (UnsupportedEncodingException e) {
+              e.printStackTrace();
+          }
+      }
+
+      @Override
+      public void onCharacteristicChangedOnUiThread(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+          byte[] data = characteristic.getValue();
+          try {
+              String s = new String(data, "utf-8");
+              Log.d(tag, "设备返回数据主线程："+ s);
+          } catch (UnsupportedEncodingException e) {
+              e.printStackTrace();
+          }
+      }
+    });
 ```
 
 ## 特征描述
