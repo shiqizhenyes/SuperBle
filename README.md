@@ -1,9 +1,14 @@
 # SuperBleDemo
 
 [ ![Download](https://api.bintray.com/packages/shiqizhenyes/androidOpenSourceLibrary/SuperBleLib/images/download.svg) ](https://bintray.com/shiqizhenyes/androidOpenSourceLibrary/SuperBleLib/_latestVersion)
+
 ![avatar](/image/logo.png)
 
 ### 一个很容易的使用的低功耗的蓝牙库
+
+## 引入
+
+    implementation 'mobi.zack.superblelib:superblelib:1.0.1'
 
 ### bug 修复
 ###### 1.0.1：
