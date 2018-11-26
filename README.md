@@ -237,15 +237,5 @@
 
                             }
 
-                            @Override
-                            public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-                                byte[] data = characteristic.getValue();
-                                try {
-                                    String s = new String(data, "utf-8");
-                                    Log.d(tag, "设诶返回数据："+ s);
-                                } catch (UnsupportedEncodingException e) {
-                                    e.printStackTrace();
-                                }
-                            }
                         });
 ```
