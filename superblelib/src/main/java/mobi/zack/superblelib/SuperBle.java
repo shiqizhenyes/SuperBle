@@ -284,11 +284,11 @@ public class SuperBle implements BleOperation {
         if (isScanning) {
             stopScan();
         }
-        if (bluetoothAdapter != null) {
-            isBluetoothOpen = bluetoothAdapter.isEnabled();
-            if (isBluetoothOpen) {
-                superBleGattCallBack.onStartConnect(device);
-                if (device != null) {
+        if (device != null) {
+            if (bluetoothAdapter != null) {
+                isBluetoothOpen = bluetoothAdapter.isEnabled();
+                if (isBluetoothOpen) {
+                    superBleGattCallBack.onStartConnect(device);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         bluetoothGatt = device.connectGatt(context,
                                 connectConfig.isAutoConnect(),
@@ -301,13 +301,13 @@ public class SuperBle implements BleOperation {
 //                        bluetoothGatt.connect();
                     }
                 }else {
-//                    superBleGattCallBack.onConnectFail(device, new SuperBleConnectException());
+                    superBleGattCallBack.onConnectFail(device, new SuperBleConnectException());
                 }
             }else {
                 superBleGattCallBack.onConnectFail(device, new SuperBleConnectException());
             }
         }else {
-            superBleGattCallBack.onConnectFail(device, new SuperBleConnectException());
+            superBleGattCallBack.onConnectFail(new SuperBleConnectException());
         }
 
     }
@@ -318,18 +318,37 @@ public class SuperBle implements BleOperation {
         if (isScanning) {
             stopScan();
         }
-        if (bluetoothAdapter != null) {
-            isBluetoothOpen = bluetoothAdapter.isEnabled();
-            if (isBluetoothOpen) {
-//                superBleGattCallBack.onStartConnect(device);
-//                if (device != null) {
-//
-//                }
+        if (!mac.trim().isEmpty()) {
+            if (bluetoothAdapter != null) {
+                isBluetoothOpen = bluetoothAdapter.isEnabled();
+                if (isBluetoothOpen) {
+                    BluetoothDevice device = this.bluetoothAdapter.getRemoteDevice(mac);
+                    if (device != null) {
+
+                        superBleGattCallBack.onStartConnect(device);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            bluetoothGatt = device.connectGatt(context,
+                                    connectConfig.isAutoConnect(),
+                                    superBleGattCallBack,
+                                    connectConfig.getTransport(), connectConfig.getPhy(),
+                                    connectConfig.getHandler());
+//                        bluetoothGatt.connect();
+                        }else {
+                            bluetoothGatt = device.connectGatt(context, connectConfig.isAutoConnect(), superBleGattCallBack);
+//                        bluetoothGatt.connect();
+                        }
+
+                    }else {
+                        superBleGattCallBack.onConnectFail(mac, new SuperBleConnectException());
+                    }
+                }else {
+                    superBleGattCallBack.onConnectFail(mac, new SuperBleConnectException());
+                }
             }else {
-//                superBleGattCallBack.onConnectFail(device, new SuperBleConnectException());
+            superBleGattCallBack.onConnectFail(mac, new SuperBleConnectException());
             }
         }else {
-//            superBleGattCallBack.onConnectFail(device, new SuperBleConnectException());
+            superBleGattCallBack.onConnectFail(new SuperBleConnectException());
         }
 
     }
@@ -373,16 +392,27 @@ public class SuperBle implements BleOperation {
     @Override
     public void disconnect(BluetoothDevice bluetoothDevice) {
 
+        if (bluetoothGatt != null) {
+            bluetoothGatt.disconnect();
+            bluetoothGatt = null;
+        }
+
     }
 
     @Override
     public void disconnect(String mac) {
-
+        if (bluetoothGatt != null) {
+            bluetoothGatt.disconnect();
+            bluetoothGatt = null;
+        }
     }
 
     @Override
     public void disconnectALl() {
-
+        if (bluetoothGatt != null) {
+            bluetoothGatt.disconnect();
+            bluetoothGatt = null;
+        }
     }
 
     @Override

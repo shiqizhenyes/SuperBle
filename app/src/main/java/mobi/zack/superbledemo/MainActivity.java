@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button mMSend;
     private RecyclerView mDeviceRecyclerView;
     private Button mMScan;
+    private Button mDisconnect;
     private EditText mMSendData;
     private TextView mConnectStatus;
 
@@ -74,6 +75,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Log.d(tag,"连接中" );
 
                         mConnectStatus.setText(R.string.connecting);
+                    }
+
+                    @Override
+                    public void onConnectFail(SuperBleConnectException exception) {
+
+                    }
+
+                    @Override
+                    public void onConnectFail(String mac, SuperBleConnectException exception) {
+
                     }
 
                     @Override
@@ -125,12 +136,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mConnectStatus = findViewById(R.id.mConnectStatus);
         mMOpen = findViewById(R.id.mOpen);
         mMSend = findViewById(R.id.mSend);
+        mDisconnect = findViewById(R.id.mDisconnect);
         mDeviceRecyclerView = findViewById(R.id.mDeviceRecyclerView);
         mMScan = findViewById(R.id.mScan);
         mMSendData = findViewById(R.id.mSendData);
         mMScan.setOnClickListener(this);
         mMOpen.setOnClickListener(this);
         mMSend.setOnClickListener(this);
+        mDisconnect.setOnClickListener(this);
     }
 
     @Override
@@ -183,7 +196,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onScanFail(SuperBleScanException e) {
                         Log.d(tag,"扫描失败");
-
                     }
 
                 });
@@ -205,18 +217,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         }
 
-                        @Override
-                        public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-                            byte[] data = characteristic.getValue();
-                            try {
-                                String s = new String(data, "utf-8");
-                                Log.d(tag, "设诶返回数据："+ s);
-                            } catch (UnsupportedEncodingException e) {
-                                e.printStackTrace();
-                            }
-                        }
                     });
                 }
+
+                break;
+            case R.id.mDisconnect:
+
+                superBle.disconnectALl();
 
                 break;
         }
@@ -254,6 +261,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onNotifyFail(BluetoothGatt gatt, SuperBleGatt superBleGatt) {
                 Log.d(tag,"订阅失败");
+            }
+
+            @Override
+            public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+                byte[] data = characteristic.getValue();
+                try {
+                    String s = new String(data, "utf-8");
+                    Log.d(tag, "设备返回数据："+ s);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onCharacteristicChangedOnUiThread(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+                byte[] data = characteristic.getValue();
+                try {
+                    String s = new String(data, "utf-8");
+                    Log.d(tag, "设备返回数据主线程："+ s);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }

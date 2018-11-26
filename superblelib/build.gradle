@@ -17,7 +17,7 @@ android {
         minSdkVersion 18
         targetSdkVersion 28
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.1"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
@@ -75,7 +75,7 @@ artifacts {
 }
 
 group = "mobi.zack.superblelib"
-version = "1.0.0"
+version = "1.0.1"
 
 install {
     repositories.mavenInstaller {
@@ -135,9 +135,9 @@ bintray {
         issueTrackerUrl = 'https://github.com/shiqizhenyes/SuperBleLib/issues'
         publicDownloadNumbers = true
         version {
-            name = '1.0.0'
+            name = '1.0.1'
             desc = 'bluetooth open source library'
-            vcsTag = '1.0.0'
+            vcsTag = '1.0.1'
             attributes = ['gradle-plugin': 'com.use.less:com.use.less.gradle:gradle-useless-plugin']
         }
     }

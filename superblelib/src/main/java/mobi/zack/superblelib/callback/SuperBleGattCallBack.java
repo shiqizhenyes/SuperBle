@@ -38,6 +38,10 @@ public abstract class SuperBleGattCallBack extends BluetoothGattCallback impleme
 
     public abstract void onConnecting(BluetoothDevice device);
 
+    public abstract void onConnectFail(SuperBleConnectException exception);
+
+    public abstract void onConnectFail(String mac, SuperBleConnectException exception);
+
     public abstract void onConnectFail(BluetoothDevice device, SuperBleConnectException exception);
 
     public abstract void onConnectSuccess(BluetoothDevice device, BluetoothGatt gatt);
@@ -48,35 +52,13 @@ public abstract class SuperBleGattCallBack extends BluetoothGattCallback impleme
 
     private SuperBleServerCallBack superBleServerCallBack;
     private SuperBleNotifyCallBack superBleNotifyCallBack;
-    private SuperBleWriteCallBack superBleWriteCallBack;
+//    private SuperBleWriteCallBack superBleWriteCallBack;
     private BluetoothGatt bluetoothGatt;
     private BluetoothGattService bluetoothGattService;
 
     private UUID serverUUID;
     private UUID notifyUUID;
     private ExecutorService executorService;
-//    public static SuperBleGatt superBleGatt = this;
-
-//    public static class WriteHandler extends Handler {
-//
-//        @Override
-//        public void handleMessage(Message msg) {
-//            super.handleMessage(msg);
-//            Log.d(tag, "收到消息："+msg.what);
-//            if (msg.what == C.WRITE) {
-//                WriteData writeData = (WriteData) msg.obj;
-//                if (writeData != null) {
-//                    post(new Runnable() {
-//                        @Override
-//                        public void run() {
-//
-//                        }
-//                    });
-//                }
-//            }
-//        }
-//    }
-
 
     private void initThreadPool() {
         executorService = Executors.newSingleThreadExecutor();
@@ -92,7 +74,33 @@ public abstract class SuperBleGattCallBack extends BluetoothGattCallback impleme
         this.notifyUUID = notifyUUID;
     }
 
-    private Handler mainHandler = new Handler(Looper.getMainLooper());
+
+    private class SuperBleHandler extends Handler {
+        Looper looper;
+        SuperBleHandler(Looper looper) {
+            super(looper);
+            this.looper = looper;
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == C.WRITE) {
+                Log.d(tag, "写入接收数据" + String.valueOf( superBleNotifyCallBack == null));
+                ReceiveData receiveData = (ReceiveData) msg.obj;
+                if (receiveData != null) {
+                    if (superBleNotifyCallBack != null) {
+                        superBleNotifyCallBack
+                                .onCharacteristicChangedOnUiThread(receiveData.getBluetoothGatt(),
+                                receiveData.getCharacteristic());
+                    }
+                }
+            }
+
+        }
+    }
+
+    private Handler mainHandler = new SuperBleHandler(Looper.getMainLooper());
 
     private void sendMessageToMain(final Message msg) {
         mainHandler.post(new Runnable() {
@@ -114,15 +122,6 @@ public abstract class SuperBleGattCallBack extends BluetoothGattCallback impleme
                             onDisConnected(true, gatt.getDevice(), gatt);
                             break;
                     }
-                }else if (msg.what == C.WRITE) {
-                    ReceiveData receiveData = (ReceiveData) msg.obj;
-                    if (receiveData != null) {
-                        if (superBleWriteCallBack != null) {
-                            superBleWriteCallBack
-                                    .onCharacteristicChanged(receiveData.getBluetoothGatt(),
-                                    receiveData.getCharacteristic());
-                        }
-                    }
                 }
             }
         });
@@ -140,14 +139,15 @@ public abstract class SuperBleGattCallBack extends BluetoothGattCallback impleme
     @Override
     public void notify(BluetoothGatt gatt, UUID notifyUUID, SuperBleNotifyCallBack superBleNotifyCallBack) {
         this.notifyUUID = notifyUUID;
+        this.superBleNotifyCallBack = superBleNotifyCallBack;
         bluetoothGattService = gatt.getService(this.serverUUID);
         BluetoothGattCharacteristic notifyCharacteristic = bluetoothGattService.getCharacteristic(notifyUUID);
         boolean isNotify = gatt.setCharacteristicNotification(notifyCharacteristic, true);
         if (isNotify) {
-            superBleNotifyCallBack.onNotifySuccess(gatt, notifyCharacteristic,this);
+            this.superBleNotifyCallBack.onNotifySuccess(gatt, notifyCharacteristic,this);
             initThreadPool();
         }else {
-            superBleNotifyCallBack.onNotifyFail(gatt, this);
+            this.superBleNotifyCallBack.onNotifyFail(gatt, this);
         }
     }
 
@@ -159,10 +159,10 @@ public abstract class SuperBleGattCallBack extends BluetoothGattCallback impleme
         if (bluetoothGatt != null) {
             boolean isNotify = bluetoothGatt.setCharacteristicNotification(notifyCharacteristic, true);
             if (isNotify) {
-                superBleNotifyCallBack.onNotifySuccess(bluetoothGatt, notifyCharacteristic ,this);
+                this.superBleNotifyCallBack.onNotifySuccess(bluetoothGatt, notifyCharacteristic ,this);
                 initThreadPool();
             }else {
-                superBleNotifyCallBack.onNotifyFail(bluetoothGatt, this);
+                this.superBleNotifyCallBack.onNotifyFail(bluetoothGatt, this);
             }
         }
 
@@ -196,7 +196,7 @@ public abstract class SuperBleGattCallBack extends BluetoothGattCallback impleme
 
     @Override
     public void write(final UUID writeUUID, final byte[] bytes, final SuperBleWriteCallBack superBleWriteCallBack) {
-        this.superBleWriteCallBack = superBleWriteCallBack;
+//        this.superBleWriteCallBack = superBleWriteCallBack;
         Runnable writeRunnable = new Runnable() {
             @Override
             public void run() {
@@ -214,7 +214,7 @@ public abstract class SuperBleGattCallBack extends BluetoothGattCallback impleme
                 }
             }
         };
-        executorService.submit(writeRunnable);
+        new Thread(writeRunnable).start();
     }
 
     @Override
@@ -257,14 +257,19 @@ public abstract class SuperBleGattCallBack extends BluetoothGattCallback impleme
     @Override
     public void onCharacteristicWrite(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
         super.onCharacteristicWrite(gatt, characteristic, status);
-        gatt.writeCharacteristic(characteristic);
+        if (status == BluetoothGatt.GATT_SUCCESS) {
+            this.bluetoothGatt = gatt;
+        }
     }
-
 
     @Override
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
         super.onCharacteristicChanged(gatt, characteristic);
-        Log.d(tag,"接收数据："+ Arrays.toString(characteristic.getValue()));
+        Log.d(tag,"接收数据："+ Arrays.toString(characteristic.getValue())+ Thread.currentThread().getName());
+        Log.d(tag, "消息 " + String.valueOf(mainHandler == null));
+        if (this.superBleNotifyCallBack != null) {
+            this.superBleNotifyCallBack.onCharacteristicChanged(gatt, characteristic);
+        }
         Message message = new Message();
         message.what = C.WRITE;
         ReceiveData receiveData = new ReceiveData();
