@@ -10,6 +10,16 @@
 
     implementation 'mobi.zack.superblelib:superblelib:x.y.z'
 
+### 更新预告
+
+###### 1.0.2
+  1.更换SuperBleGattCallBack 为SuperBleConnectCallBack 回调，让强迫症也感觉无比的舒服
+
+  2.添加多设备支持
+
+###### 1.0.3
+  1.完善异常提示
+
 ### bug 修复
 ###### 1.0.1：
   1. 修复数据无法回调bug
