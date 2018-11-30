@@ -13,12 +13,11 @@
 ### 更新预告
 
 ###### 1.0.2
-  1.更换SuperBleGattCallBack 为SuperBleConnectCallBack 回调，让强迫症也感觉无比的舒服
-
-  2.添加多设备支持
+    1.更换SuperBleGattCallBack 为SuperBleConnectCallBack 回调，让强迫症也感觉无比的舒服
+    2.添加多设备支持
 
 ###### 1.0.3
-  1.完善异常提示
+    1.完善异常提示
 
 ### bug 修复
 ###### 1.0.1：
@@ -28,6 +27,10 @@
 
 ###### 1.0.2：
     1.修复拼写错误
+
+### bug反馈
+    1.QQ：1638125736
+    2.email：shiqizhenyes@163.com
 
 ## 初始化
 
