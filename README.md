@@ -155,7 +155,8 @@
 
       superBle.disconnect(device);
 
-      superBle.disconnect(mac);
+      ～superBle.disconnect(mac);～
+      superBle.disconnect();
 
       superBle.disconnectAll();
 
