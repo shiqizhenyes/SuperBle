@@ -2,17 +2,17 @@ apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
-def siteUrl = 'https://github.com/shiqizhenyes/SuperBleDemo' // 项目主页。
-def gitUrl = 'https://github.com/shiqizhenyes/SuperBleDemo.git' // Git仓库的url。
+def siteUrl = 'https://github.com/shiqizhenyes/SuperBle' // 项目主页。
+def gitUrl = 'https://github.com/shiqizhenyes/SuperBle.git' // Git仓库的url。
 
 android {
-    compileSdkVersion 28
+
+    compileSdkVersion 29
     defaultConfig {
         minSdkVersion 18
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0.2"
-
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
@@ -28,7 +28,7 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
@@ -110,10 +110,10 @@ bintray {
         //填入 bintray 上对应的 package 信息
         repo = 'androidOpenSourceLibrary'
         name = 'SuperBleLib'
-        vcsUrl = 'https://github.com/shiqizhenyes/SuperBleDemo.git'
-        websiteUrl = 'https://github.com/shiqizhenyes/SuperBleDemo'
+        vcsUrl = 'https://github.com/shiqizhenyes/SuperBle.git'
+        websiteUrl = 'https://github.com/shiqizhenyes/SuperBle'
         licenses = ['MIT']
-        issueTrackerUrl = 'https://github.com/shiqizhenyes/SuperBleDemo/issues'
+        issueTrackerUrl = 'https://github.com/shiqizhenyes/SuperBle/issues'
         publicDownloadNumbers = true
         version {
             name = '1.0.2'

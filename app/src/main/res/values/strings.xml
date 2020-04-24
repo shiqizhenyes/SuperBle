@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">SuperBleDemo</string>
+    <string name="app_name">SuperBle</string>
     <string name="openBle">打开蓝牙</string>
     <string name="mScan">扫描</string>
 
