@@ -400,7 +400,7 @@ public class SuperBle implements BleOperation {
     }
 
     @Override
-    public void disconnect(String mac) {
+    public void disconnect() {
         if (bluetoothGatt != null) {
             bluetoothGatt.disconnect();
             bluetoothGatt = null;

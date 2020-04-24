@@ -48,7 +48,7 @@ public interface BleOperation {
 //    public void initDescriptor();
 
     public void disconnect(BluetoothDevice bluetoothDevice);
-    public void disconnect(String mac);
+    public void disconnect();
     public void disconnectAll();
 
     public void write(UUID writeUUID, byte[] data, SuperBleGatt superBleGatt, SuperBleWriteCallBack writeCallBack);
