@@ -10,7 +10,7 @@
 
     implementation 'mobi.zack.superblelib:superblelib:x.y.z'
 
-### 更新预告
+### 更新记录
 
 ###### 1.0.2
     1.更换SuperBleGattCallBack 为SuperBleConnectCallBack 回调，让强迫症也感觉无比的舒服
@@ -18,6 +18,10 @@
 
 ###### 1.0.3
     1.完善异常提示
+
+### 更新计划
+    1.添加ios 版本
+    2。添加flutter 版本支持
 
 ### bug 修复
 ###### 1.0.1：
